@@ -1,0 +1,29 @@
+Router(config-if)#exit
+Router(config)#interface gig0/0
+Router(config-if)#ip address 10.10.10.2 255.0.0.0
+Router(config-if)#exit
+Router(config)#interface gig0/0
+Router(config-if)#no shutdown
+Router(config-if)#exit
+
+CNSRouter(config)#hostname CNSRouter
+CNSRouter(config)#enable password cisco
+CNSRouter(config)#ip domain-name cisco.com
+CNSRouter(config)#username Admin password cisco
+CNSRouter(config)#crypto key generate rsa
+How many bits in the modulus [512]: 1024
+% Generating 1024 bit RSA keys, keys will be non-exportable...[OK]
+
+CNSRouter(config)#line vty 0 15
+CNSRouter(config-line)#login local
+CNSRouter(config-line)#transport input ssh
+CNSRouter(config-line)#exit
+CNSRouter(config)#ip ssh version 2
+
+
+
+command prompt
+ssh -l Admin 192.168.10.2
+password
+CNSRouter>en
+CNSRouter#config t
