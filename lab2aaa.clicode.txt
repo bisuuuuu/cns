@@ -1,0 +1,48 @@
+Router#config t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#interface gig0/0
+Router(config-if)#ip address 10.10.10.1
+% Incomplete command.
+Router(config-if)#ip address 10.10.10.1 255.0.0.0
+Router(config-if)#exit
+Router(config)#interface gig0/0
+Router(config-if)#no shutdown
+Router(config-if)#exit
+Router(config)#aaa new-model
+Router(config)#aaa authentication login default group tacacs+ local
+Router(config)#tacacs-server host 10.10.10.10
+Router(config)#tacacs-server key server123
+Router(config)#line vty 0 5
+Router(config-line)#login authentication default 
+Router(config-line)#line console 0
+Router(config-line)#login authentication default 
+Router(config-line)#exit
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+Router#wr
+Building configuration...
+[OK]
+Router#config t
+Enter configuration commands, one per line.  End with CNTL/Z.
+Router(config)#username iter123 password soa123
+Router(config)#exit
+Router#
+%SYS-5-CONFIG_I: Configured from console by console
+
+
+
+
+cmnd prompt:
+telnet 10.10.10.1
+username:iter123
+password:soa123
+router>
+
+
+
+server:
+AAA service:on  client name:Router Clientip:10.10.10.1 servertype:Tacacs key:server123
+
+username cns1     password cns123
