@@ -1,0 +1,33 @@
+#pip install pycryptodome
+from Crypto.Cipher import DES
+import binascii
+
+def encryption(des, P, key):
+    while (len(P) % 8 != 0):
+        P += " "
+    P = P.encode()              # Converts string to binary
+    C = des.encrypt(P)          # Encrypt function
+    C = binascii.hexlify(C)     # Convert binary to hex
+    C = C.decode()              # Hex to string
+    return C
+
+def decryption(des, C, key):
+    C = binascii.unhexlify(C)   # Hex to binary
+    P1 = des.decrypt(C)         # Decrypt function
+    P1 = P1.decode().strip()    # Binary to string, remove padding
+    return P1
+
+# Input from user
+key = input("Enter key: ")              # Example: 01234567
+P = input("Enter plaintext: ")          # Example: Hello World
+print("Plaintext is: ", P)
+key = key.encode()                      # Convert key to binary
+des_cipher = DES.new(key, DES.MODE_ECB) # Create DES cipher object
+
+# Encrypt
+C = encryption(des_cipher, P, key)
+print("Ciphertext after encryption: ", C)
+
+# Decrypt
+P1 = decryption(des_cipher, C, key)
+print("Plaintext after decryption: ", P1)

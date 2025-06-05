@@ -1,0 +1,28 @@
+from Crypto.Cipher import AES
+import binascii
+
+def encryption(aes, P, key):
+    while (len(P) % 16 != 0):
+        P += " "
+    P = P.encode()              # Convert string to binary
+    C = aes.encrypt(P)          # Encrypt
+    C = binascii.hexlify(C)     # Convert binary to hexadecimal
+    C = C.decode()              # Convert to string
+    return C
+
+def decryption(aes, C, key):
+    C = binascii.unhexlify(C)   # Convert hex to binary
+    P1 = aes.decrypt(C)         # Decrypt
+    P1 = P1.decode().strip()    # Convert binary to string and remove padding
+    return P1
+key = input("Enter key: ")                      # Example: 1234567890123456
+P = input("Enter plaintext: ")                  # Example: Hello World
+print("Plaintext is: ", P)
+key = key.encode()                              # Convert key to binary
+aes_cipher = AES.new(key, AES.MODE_ECB)         # Create AES cipher object
+
+C = encryption(aes_cipher, P, key)              # Encrypt
+print("Ciphertext after encryption: ", C)
+
+P1 = decryption(aes_cipher, C, key)             # Decrypt
+print("Plaintext after decryption: ", P1)
