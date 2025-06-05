@@ -1,0 +1,45 @@
+import math
+import random
+
+# Function to generate RSA keys
+def keyGeneration():
+    p = int(input('Enter 1st large prime p: '))             # Input the prime number p
+    q = int(input('Enter 2nd large prime q: '))             # Input the prime number q
+    n = p * q                                               # Compute n = p * q
+    phi_n = (p - 1) * (q - 1)                               # Compute Euler's totient function phi(n)
+    
+    # Input public key exponent 'e' such that 1 < e < phi_n and gcd(e, phi_n) = 1
+    e = int(input('Randomly choose e between 1 and phi_n: '))
+    while math.gcd(e, phi_n) != 1 or not (1 < e < phi_n):   # Loop until e is valid
+        e = int(input('Choose a valid e (coprime to phi_n): '))
+    
+    # Find a suitable k such that (k * phi_n + 1) is divisible by e to compute private key 'd'
+    k = random.randint(1, 1000)
+    while (k * phi_n + 1) % e != 0:
+        k = random.randint(1, 1000)
+
+    d = int((k * phi_n + 1) / e)                            # Compute d using modular inverse logic
+
+    return e, n, d                                          # Return public and private keys
+
+# RSA Encryption: C = (P^e) % n
+def encrypt(P, e, n):
+    C = pow(P, e, n)
+    return C
+
+# RSA Decryption: P = (C^d) % n
+def decrypt(C, d, n):
+    P = pow(C, d, n)
+    return P
+
+# Key generation
+e = n = d = 0
+e, n, d = keyGeneration()                                   # Generate keys
+print('e =', e, 'n =', n, 'd =', d)                          # Print the keys
+
+P = int(input("Enter plaintext (as integer): "))
+C = encrypt(P, e, n)
+print("Ciphertext =", C)
+
+P1 = decrypt(C, d, n)
+print("Decrypted plaintext =", P1)
