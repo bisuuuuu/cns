@@ -1,0 +1,79 @@
+def playfair_key_matrix(key):
+    key = key.upper().replace('J', 'I')
+    matrix = []
+    for c in key + "ABCDEFGHIKLMNOPQRSTUVWXYZ":
+        if c not in matrix and c.isalpha():
+            matrix.append(c)
+    return [matrix[i:i+5] for i in range(0, 25, 5)]
+
+def find_pos(matrix, c):
+    for r in range(5):
+        for col in range(5):
+            if matrix[r][col] == c:
+                return r, col
+
+def prepare_text(text):
+    text = text.upper().replace('J', 'I').replace(" ", "")
+    i = 0
+    pairs = []
+    while i < len(text):
+        a = text[i]
+        b = ''
+        if i+1 < len(text):
+            b = text[i+1]
+        if b == '' or a == b:
+            b = 'X'
+            i += 1
+        else:
+            i += 2
+        pairs.append((a, b))
+    return pairs
+
+def playfair_encrypt(key, plaintext):
+    matrix = playfair_key_matrix(key)
+    pairs = prepare_text(plaintext)
+    cipher = ''
+    for a, b in pairs:
+        r1, c1 = find_pos(matrix, a)
+        r2, c2 = find_pos(matrix, b)
+        if r1 == r2:
+            cipher += matrix[r1][(c1+1) % 5]
+            cipher += matrix[r2][(c2+1) % 5]
+        elif c1 == c2:
+            cipher += matrix[(r1+1) % 5][c1]
+            cipher += matrix[(r2+1) % 5][c2]
+        else:
+            cipher += matrix[r1][c2]
+            cipher += matrix[r2][c1]
+    return cipher
+
+def playfair_decrypt(key, ciphertext):
+    matrix = playfair_key_matrix(key)
+    ciphertext = ciphertext.upper().replace(" ", "")
+    pairs = [(ciphertext[i], ciphertext[i+1]) for i in range(0, len(ciphertext), 2)]
+    plaintext = ''
+    for a, b in pairs:
+        r1, c1 = find_pos(matrix, a)
+        r2, c2 = find_pos(matrix, b)
+        if r1 == r2:
+            plaintext += matrix[r1][(c1-1) % 5]
+            plaintext += matrix[r2][(c2-1) % 5]
+        elif c1 == c2:
+            plaintext += matrix[(r1-1) % 5][c1]
+            plaintext += matrix[(r2-1) % 5][c2]
+        else:
+            plaintext += matrix[r1][c2]
+            plaintext += matrix[r2][c1]
+    return plaintext
+
+# User inputs
+key = input("Enter Playfair key (no J, will be replaced by I): ").strip()
+plaintext = input("Enter plaintext to encrypt: ").strip()
+
+# Encrypt
+encrypted_text = playfair_encrypt(key, plaintext)
+print("Encrypted text:", encrypted_text)
+
+# Decrypt
+decrypted_text = playfair_decrypt(key, encrypted_text)
+print("Decrypted text:", decrypted_text)
