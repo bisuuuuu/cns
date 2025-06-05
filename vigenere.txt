@@ -1,0 +1,45 @@
+def vigenere_encrypt(key, plaintext):
+    key = key.upper()
+    plaintext = plaintext.upper()
+    cipher = []
+    key_length = len(key)
+    key_indices = [ord(k) - ord('A') for k in key]
+
+    for i, char in enumerate(plaintext):
+        if char.isalpha():
+            pi = ord(char) - ord('A')
+            ki = key_indices[i % key_length]
+            ci = (pi + ki) % 26
+            cipher.append(chr(ci + ord('A')))
+        else:
+            cipher.append(char)  # Keep spaces/punctuation
+    return ''.join(cipher)
+
+def vigenere_decrypt(key, ciphertext):
+    key = key.upper()
+    ciphertext = ciphertext.upper()
+    plain = []
+    key_length = len(key)
+    key_indices = [ord(k) - ord('A') for k in key]
+
+    for i, char in enumerate(ciphertext):
+        if char.isalpha():
+            ci = ord(char) - ord('A')
+            ki = key_indices[i % key_length]
+            pi = (ci - ki + 26) % 26
+            plain.append(chr(pi + ord('A')))
+        else:
+            plain.append(char)
+    return ''.join(plain)
+
+# User input
+key = input("Enter Vigenère key: ").strip()
+plaintext = input("Enter plaintext: ").strip()
+
+# Encrypt
+encrypted_text = vigenere_encrypt(key, plaintext)
+print("Encrypted text:", encrypted_text)
+
+# Decrypt
+decrypted_text = vigenere_decrypt(key, encrypted_text)
+print("Decrypted text:", decrypted_text)
